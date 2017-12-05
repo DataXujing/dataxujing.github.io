@@ -1,0 +1,296 @@
+---
+layout: post
+title: "Python面向对象的编程及装饰器"
+img: weiexueshan2.jpg # Add image post (optional)
+date: 2017-12-01 9:00:00 
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+tag: [Python]
+---
+
+**徐静**
+
+本文Fork自‘数萃大数据微信公众号’
+
+## 1. Python面向对象的编程
+
+计算机程序设计中通常包括面向过程（Process Oriented）和面向对象（Object Oriented）两种编程方式。所谓面向过程，即在程序设计中以过程为核心，由过程、步骤和函数组成；而面向对象则是以对象为核心，先创建一个类，然后再得到对象。这样解释实在太抽象了，小编举个通俗的例子来说明一下。
+有一天，小编的女朋友突然说想吃火锅了，于是小编就有了两种吃火锅的办法：
+面向过程吃火锅的方法：
+
+1. 出去买菜
+
+2. 回家洗菜
+
+3. 开始煮菜
+
+4. 煮完开吃
+
+为了吃到火锅，小编只能自己动手，买菜洗菜煮菜然后开吃。（吃完还得洗碗）
+
+面向对象吃火锅的方法：
+
+1. 来到火锅店，老板，我们点菜了
+
+2. 老板，可以上锅底了
+
+3. 老板，菜赶紧上齐了
+
+吃火锅不用自己动手了，每个过程的执行都有老板和服务员这个对象，小编等着吃就好啦。（做人最要紧的是开心）
+
+好了，话不多说，小编今天带大家学习一下 Python 中面向对象程序设计以及数据封装、继承和多态三大特性。
+
+在 Python 中所有数据类型都可以视为对象，我们也可以自定义对象，自定义的对象数据类型就是面向对象中类（Class）的概念。Class 是一种抽象概念，比如说定义一个篮球运动员的 Class，指的是球员这个概念，而实例（Instance）则是一个个具体的球员，比如科比和麦迪是两个具体的球员。所以面向对象的程序设计思想是先抽象出 Class，然后根据 Class 创建 Instance。通常一个 Class 既包含数据也包含操作数据的方法。
+
+### 类和实例
+
+作为面向对象最重要的概念，必须牢记要先创建抽象的类（Class）然后根据类创建具体的实例对象。下面以篮球运动员类为例，在 Python 中进行定义：
+
+```python
+class Player(object):
+   pass
+
+```
+
+关键字 class 后面是类名 Player，括号里面是该类所继承的对象，如果没有继承类一般都写做 object 类。定义好类之后，就可以根据 Player 类创建 Player 的实例，创建实例可以通过类名+( )来实现。
+
+```python
+>>> Kobe = Player()
+>>> Kobe
+<__main__.player object at 0x10a67a209>
+>>> Player
+<class '__main__.Player'>
+```
+
+从结果可以看到变量 Kobe 指向的就是一个 Player 实例，而 Player 本身则是一个类。类作为一个具有模板作用的定义，我们可以在创建实例时将一些必备的属性定义到里面去。Python 中通过定义一个特殊的 __init__ 方法来实现：
+
+```python
+class Player(object):
+   
+   def __init__(self, name, points):
+       self.name = name
+       self.points = points
+
+```
+
+需要强调的一点是，__init__ 方法的第一个参数永远都是 self，可以理解为创建的实例本身，定义中各类属性都绑定到 self。定义完改方法后在传参的时候就要按照定义的参数方式进行传参了：
+
+```python
+>>> Kobe = Player('Kobe Bryant', 30.3)
+>>> Kobe.name
+'Kobe Bryant'
+>>> Kobe.points
+30.3
+```
+
+类的方法与普通函数并没有太大区别，类定义中函数第一个参数都是 self，除此之外也可以传入普通函数一样的默认参数、可变参数、关键字参数和命名关键字参数等。
+
+### 数据封装
+
+数据封装是面向对象编程的第一大特征。所谓数据封装，就是指在类定义时指定访问内部数据的方式，这种方式通过在类中定义函数来实现，这样数据就被封装起来了。而封装数据的函数是和类本身关联在一起的，我们称之为类的方法。
+
+```python
+class Player(object):
+
+    def __init__(self, name, score):
+        self.name = name
+        self.points = points    
+
+    def print_points(self):
+        print('%s: %s' % (self.name, self.points))
+```
+
+访问对象数据时：
+
+```python
+>>> Kobe.print_points()
+Kobe Bryant: 30.3  
+```
+
+数据封装还有个好处就是可以给类添加新的方法，直接在定义类的函数中进行添加即可：
+
+```python
+class Student(object):
+
+    ...    
+     def get_points(self):
+        if self.points >= 28:           
+          print("You are a mvp player!")
+        elif self.points >= 20:  
+          print("You are an all star player!")
+        else:            
+          print("hurry up!")
+
+```
+
+使用该方法访问数据：
+
+```python
+>>> Kobe.get_points()
+You are a mvp player!
+```
+
+### 继承
+
+面向对象程序设计的第二大特征叫做继承。当我们定义一个 Class 的时候，可以从当前环境下某个现有的类进行继承，新定义的类就可以称之为子类，而之前存在的类可以称之为父类或者是基类。
+
+还是按照前面的类定义的例子，对 Player 类定义一个 do 的方法：
+
+```python
+class Player(object):
+    def do(self):
+        print('Player is shooting')
+
+```
+
+当我们需要定义一个子类 AllStar 类的时候就可以直接从 Player 类继承：
+
+```python
+class AllStar(Player):
+    pass
+
+```
+
+对于 Player 类来说，AllStar 类就是它的子类，而对于 AllStar 类来说，Player类就是它的父类。继承的最大好处在于子类可以获得父类的全部功能，由于父类 Player 有着 do 方法，那它的子类 AllStar 类啥也不用定义就直接获取了父类的方法：
+
+```python
+Curry = Curry()
+Curry.do()
+"Player is shooting"
+```
+
+继承的另一个好处在于可以对所继承的父类的功能进行修改，继承了老子的本领还可以对该本领推陈出新，子类厉害哟。
+
+### 多态
+
+当子类和父类同时存在某种方法时，子类的方法会覆盖父类的方法。按前例就是当Player 父类和 AllStar 子类同时存在 do 方法时，子类会对父类的方法进行覆盖。我们先来看 Curry 这个对象的数据类型：
+
+```python
+>>> isinstance(Curry, AllStar)
+True
+>>> isinstance(Curry, Player)
+True
+```
+
+看来 Curry 这个实例对象不仅是 AllStar 也是一个 Player。原来 AllStar 这个类作为子类是从 Player 这个父类上继承下来的！子承父业！
+
+因此，在一段继承关系中，如果某个实例对象的数据类型是某个子类，那它的数据类型也可以被看作是父类。但反过来可不行，不能乱了辈份。对于在父类下任何新增的子类都不必对该类的方法进行修改，任何依赖于以父类名作为参数的函数都可以不加修改正常运行，其原因就在于多态。多态的好处在于：
+
+对于一个未知变量，我们在只知道它的父类类型而对其子类类型一无所知的情况下可以放心地调用相应的方法，而调用的方法是具体作用在哪个对象上，由运行时确定的对象类型所决定。多态的厉害支持在于：调用的时候只管拿来调用并不管其中的调用细节。当我们要新增一个 Player 子类时，只要保证 do 方法编写无误，对之前代码是如何调用的并不关心。
+
+更高级的面向对象编程可以参考学习资料中的文档，有详细的介绍。
+
+
+## 2.Python装饰器
+
+所谓装饰器（decorator）指的是在Python代码运行期间动态的增加函数功能的一种方式。在上一节我们知道Python函数在运行时允许返回函数，而函数作为对象也可以被赋值给其他变量来调用，比如：
+
+```python
+>>> def LAL():
+...    print('kobe')
+...
+>>> f = LAL
+>>> f()
+kobe
+```
+
+每个函数对象都有一个_ _name_ _属性，调用该属性我们可以取得该函数的名称：
+
+```python
+>>> LAL.__name__
+'LAL'
+>>> f.__name__
+'LAL'
+```
+
+而装饰器（decorator）的作用即在于可以使得我们在调用 LAL 函数的时候，使得该函数功能增强，比如说在调用该函数前后自动打印日志，但又不能改变 LAL函数的定义。所以，Python装饰器的本质在于它是一个可以返回函数的高阶函数。我们来定义一个decorator，使得函数在调用前后能打印日志。
+
+```python
+def log(func):
+   def folder(*args,**kw):
+      print('call %s():' % func.__name__)
+      return func(*args,**kw)
+  return folder
+```
+
+仔细观察上述代码，我们定义的log函数作为一个decorator可以接受像func这样的函数作为参数，作为高阶函数它也可以返回一个函数。下面再利用Python的@语法，在重新定义 LAL函数时调用装饰器：
+
+```python
+@log
+def LAL():
+   print('kobe')
+之后再调用 LAL 函数时，不仅会运行 LAL 函数本身也会打印装饰器所设置的一串日志。
+>>> LAL()
+call LAL():
+kobe
+```
+
+@语法的作用相当于执行了如下语句：
+
+```python
+LAL = log(LAL)
+如果decorator本身也需要传入参数，那装饰器的定义则需要更加复杂一点。我们可以自定义log的文本：
+def log(text):
+   def decorator(func):
+      def folder(*args,**kw):
+         print('call %s():' % (text,func.__name__))
+         return func(*args,**kw)
+      return folder
+  return decorator
+
+```
+
+可以看见的是，我们经过三层嵌套后使得装饰器本身可以传入文本参数，其用法如下：
+
+```python
+@log('execute')
+def LAL():
+   print('kobe')
+
+```
+
+函数执行结果如下：
+
+```python
+>>> LAL()
+execute LAL():
+kobe
+```
+
+相较于两层嵌套，三层嵌套的decorator相当于执行了如下语句：
+
+```python
+>>> LAL = log('execute')(LAL)
+```
+
+可以简单分析一下这个语句。先执行log('execute')，返回的是装饰器函数，调用该返回函数，其参数是LAL函数，最后的返回值则是folder函数。不管两层还是三层嵌套，decorator的定义都是这种套路，我们开头时提到了函数作为对象是有__name__属性的，但经过装饰器装饰后的函数，其__name__属性由原先的'LAL'变成了'folder'：
+
+```python
+>>> LAL.__name__
+'folder'
+```
+
+所以这里我们还需要导入functools模块，使用functools.wraps使得经装饰器装饰前后的函数对象名保持不变，完整的decorator定义方法如下：
+
+```python
+import functools
+def log(func):
+   @functools.wraps(func)
+   def folder(*args,**kw):
+      print('call %s():' % func.__name__)
+      return func(*args,**kw)
+  return folder
+
+```
+
+decorator可以增强函数的功能，虽然不容易定义清楚，但使用起来非常便利。
+
+更多Python装饰器的学习可以参见学习资料
+
+
+## 学习资料：
+
+【1】[http://www.runoob.com/python/python-object.html](http://www.runoob.com/python/python-object.html)
+
+【2】[https://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000](https://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000)
+
+文章预告：明天我们讲解最近在工作中用到的，Python打包成模块并上传至PyPI,别人就可以pip安装你的模块了，为开源社区做贡献，敬请期待。

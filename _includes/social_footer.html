@@ -1,0 +1,24 @@
+
+<ul class="social_footer">
+  {% if site.wechat_url %}
+  <li><a href="{{ site.wechat_url }}" target="_blank"><i class="fa fa-wechat" aria-hidden="true"></i></a></li>
+  {% else %}
+  <li><a href="#" target="_blank"><i class="fa fa-wechat" aria-hidden="true"></i></a></li>      
+  {% endif %}
+  {% if site.github_url %}
+  <li><a href="{{ site.github_url }}" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+  {% else %}
+  <li><a href="#" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+  {% endif %}
+  {% if site.gitcafe_url %}
+  <li><a href="{{ site.gitcafe_url }}" target="_blank"><i class="fa fa-github-alt" aria-hidden="true"></i></a></li>
+  {% else %}
+  <li><a href="#" target="_blank"><i class="fa fa-github-alt" aria-hidden="true"></i></a></li>
+  {% endif %}
+  {% if site.qq_url %}
+  <li><a href="{{ site.qq_url }}" target="_blank"><i class="fa fa-qq" aria-hidden="true"></i></a></li>
+  {% else %}
+  <li><a href="#" target="_blank"><i class="fa fa-qq" aria-hidden="true"></i></a></li>
+  {% endif %}
+  
+</ul>

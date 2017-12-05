@@ -1,0 +1,30 @@
+---
+layout: default
+title: 关于
+permalink: /about/
+---
+<section class="about">
+  <a href="{{site.baseurl}}/" class="button_back"><i class="fa fa-long-arrow-left" aria-hidden="true"></i> Back</a>
+  <div class="about_box">
+    <div class="author">
+        <div class="author_image">
+          <img src="{{site.baseurl}}/assets/img/{% if site.author-pic %}{{site.author-pic}}{% endif %}" alt="Author image">
+        </div>
+        <div class="author_info">
+          <h2 class="author_title">{% if site.author-name %}{{site.author-name}}{% else %}徐静{% endif %}</h2>
+          <p class="author_subtitle">{% if site.about-author %}{{site.about-author}}{% else %}野生非正式程序猿（自封），数据分析师（官方）{% endif %}</p>
+          <p class="author_subtitle">I received my MSc. degree in Probability Theory & Mathematical Statistics in June 2016 from Qingdao University.</p>
+
+          <p>Currently I am focusing on <span style="color:#BF3EFF;">Deep Learning</span>. Previously I learning about <span style="color:#BF3EFF;">Applied Mathematics</span>,<span style="color:#BF3EFF;">Statistic</span>, <span style="color:#BF3EFF;">Machine Learning</span> and <span style="color:#BF3EFF;">Data Mining</span>. For applications, I am also interested in the following areas: <span style="color:#BF3EFF;">Recommender System</span>,<span style="color:#BF3EFF;">Web Crawler</span>,<span style="color:#BF3EFF;">Front end Visualization</span>,<span style="color:#BF3EFF;">Online Painting Deployment of Models</span></p>
+          
+          <p>I use <span style="color:#BF3EFF;">R</span>, <span style="color:#BF3EFF;">RServer</span>,<span style="color:#BF3EFF;">Rstudioserver</span>,<span style="color:#BF3EFF;">shinyserver</span>, <span style="color:#BF3EFF;">Python</span>,<span style="color:#BF3EFF;">Ruby</span>, <span style="color:#BF3EFF;">LaTex</span>, <span style="color:#BF3EFF;">HTML5</span>, <span style="color:#BF3EFF;">CSS</span>, <span style="color:#BF3EFF;">JavaScript</span> and some DB (like <span style="color:#BF3EFF;">SQLServer</span>, <span style="color:#BF3EFF;">MySQL</span>, <span style="color:#BF3EFF;">MongoDB</span>......)  and also use some deep learning framework like <span style="color:#BF3EFF;">TensorFlow</span>, <span style="color:#BF3EFF;">Keras</span> and <span style="color:#BF3EFF;">MxNet</span> ...... in my work.</p>
+
+         <p> 目前公开发表并接收高质量的学术论文3篇 </p>
+        </div>
+      </div>
+
+      <div class="about_social">
+        {% include social_footer.html %}
+      </div>
+    </div> <!-- End Section Author -->
+</section>

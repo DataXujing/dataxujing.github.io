@@ -1,0 +1,169 @@
+---
+layout: post
+title: "Python模拟登录爬取某网站"
+img: hupo.jpg # Add image post (optional)
+date: 2017-11-25 9:00:00 
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+tag: [Python, selenuim]
+---
+**徐静**
+
+最近基于业务，需要协助业务部门爬取一些信息（具体需求因涉及商业问题,不便透漏),通过网络爬虫的办法获取。拿到该任务，首先要
+弄明白的是什么样的网站，爬取什么样的信息，需要怎么爬，最后测试自己的爬虫能否正常工作，如果不能正常工作该如何修复BUG。本文主要介绍需要怎么爬，修复BUG的过程（优化爬虫的过程）还是挺痛苦的。
+
+爬取的网站是某某微信公众号的查询网站，需要输入账号密码地区等信息获取登录权限拿到登陆成功后的信息，对信息清洗并保存。开始我想简单的用R中的rvest，XML，XML2，httr,RCurl或Rdom等去模拟登录，然后用shiny做成网页app，用shinyserver提供服务，做完之后我发现，在解析登录网页时就出现了问题，网页是异步加载的，html解析body是空的，只能模拟登录了。
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>××××</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no" 
+     name="viewport" />
+<!-- head 中 -->
+<link rel="stylesheet"
+	href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="../../../../resources/theme/custom/libs/weui/css/weui.min.css" />
+<link rel="stylesheet"
+	href="//cdn.bootcss.com/weui/1.1.1/style/weui.min.css">
+<link rel="stylesheet" type="text/css"
+	href="../../../../resources/ui/styles/styles.css">
+<link rel="stylesheet"
+	href="//cdn.bootcss.com/jquery-weui/1.0.1/css/jquery-weui.min.css">
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<!-- body 最后 -->
+<script
+	src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../../../../resources/theme/custom/libs/weui/js/weui.js"></script>
+<script src="//cdn.bootcss.com/jquery-weui/1.0.1/js/jquery-weui.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-weui/0.8.3/js/city-picker.min.js"></script>
+<script type="text/javascript"
+	src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+<script src="../js/angular-ui-router.js"></script>
+<!-- 自定义通用 JS common.js -->
+<script type="text/javascript"
+	src="../../../../resources/public/common/js/common.js"></script>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js">
+         </script>
+<script type="text/javascript" src="../js/bindNbr-main-controller.js"></script>
+<script type="text/javascript" src="../js/bindNbr-new-controller.js"></script>
+<script src="../js/bindNbr-success-controller.js"></script>
+<script src="../js/bandNbr-list-controller.js"></script>
+<script src="../js/bindNumber_service.js"></script>
+</head>
+<body ng-app="bindNbrMainApp" ng-controller="bindNbrMainAppCtrl"
+	ontouchstart>
+
+	<div data-ui-view="" />
+</body>
+</html>
+
+```
+也想过用Rselenuim模拟登录，但是如果使用R去完成爬虫，后期业务人员直接使用很不方便，R不可以把算法做成可执行文件，也就是说业务部门必须安装R软件，shinyserver的服务并不稳定，最终果断放弃用R去完成，选择用Python。
+
+Python爬虫‘性价比’还是比较高的，并且爬虫程序也可以封装成exe可执行文件，在对方无Python环境下可以轻松运行（明天会讲如何封装成可执行文件），不罗嗦了，直接上代码和演示demo.
+
+```python
+#import packages
+
+from bs4 import BeautifulSoup 
+from time import sleep
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.wait import WebDriverWait
+
+import pandas as pd
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
+import signal
+
+#加在数据
+data = pd.read_excel(u'C:/Users/Administrator.USER-20170417DX/Desktop/
+                 爬虫项目/data/putdata.xlsx',names=['kehu','names','idcard','ywy'])
+data.head
+
+address = [u'XX',u'XX',u'XX',u'XX',u'XX','XX',u'XX',u'XX',u'XX']
+url = 'XXXXXXXXXXXXXXXXXXXXXXXXXXX'
+
+#主题爬虫部分
+f=open('C:/scrapy_result.csv','a')
+result={}
+for ids,name in zip(data['idcard'],data['names']):
+    ids = str(ids)
+    WIDTH = 320
+    HEIGHT = 640
+    PIXEL_RATIO = 3.0
+    UA = 'Mozilla/5.0 (Linux; Android 4.1.1; GT-N7100 Build/JRO03C) 
+         AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/35.0.1916.138 
+         Mobile Safari/537.36 T7/6.3'
+
+    mobileEmulation = {"deviceMetrics": {"width": WIDTH, "height": HEIGHT,  
+                         "pixelRatio": PIXEL_RATIO},"userAgent": UA}
+    options = webdriver.ChromeOptions()
+    options.add_experimental_option('mobileEmulation', mobileEmulation)
+
+    driver = webdriver.Chrome(executable_path='chromedriver.exe', chrome_options=
+                               options)
+    
+    driver.get(url)
+    driver.implicitly_wait(60)
+    sleep(0.5)
+    driver.find_element_by_xpath("//input[@placeholder='请输入姓名']").click() 
+    driver.find_element_by_xpath("//input[@placeholder='请输入姓名']").clear()
+    driver.find_element_by_xpath("//input[@placeholder='请输入姓名']").send_keys(name)
+    driver.find_element_by_xpath("//input[@placeholder='请输入身份证号码']").clear()
+    driver.find_element_by_xpath("//input[@placeholder='请输入身份证号码']").
+                                  send_keys(ids)
+    
+    for local in address:
+        xpath1 = "//div[@data-picker-value="+"'"+local+"'"+"]"
+        driver.find_element_by_xpath("//input[@placeholder='请选择所在地']").
+                                     click()
+        sleep(1)
+        driver.find_element_by_xpath(xpath1).click()  #获取值对应的click()
+        driver.find_element_by_xpath("//input[@value='立即查询']").click()
+        sleep(3)
+    
+        try:
+            driver.find_element_by_xpath("//a[@class='weui_btn_dialog primary']").
+                                         click()
+        except:
+            result[ids] = driver.find_element_by_xpath("//div[@class='weui_cell_bd 
+                          weui_cell_primary']")
+                          .text.replace("\n",',')
+            #driver.close()
+            f.write(ids+','+local+','+result[ids]+'\n')
+            break;
+
+        else:
+            result[ids]='U'
+            f.write(ids+','+local+','+result[ids]+'\n')
+            #driver.service.process.send_signal(signal.SIGTERM)
+            
+    driver.close() 
+
+driver.quit()
+
+f.close()
+
+```
+
+当然可以继续优化比如：并行化分布式爬取，多线程多进程爬取，使用缓存数据库等，这在大型爬虫中常用的招数，这次的爬虫数据量不大，URL来源于微信公众号，网页请求不易过快，请求容易挂掉失败。
+
+最后视频展示了爬虫demo, **视频中的个人信息为虚假的模拟信息，主要为演示爬虫而做**
+
+[点我播放demo]({{ site.url }}/assets/bowen13/output_2.mp4)
+
+下文预告：讲本节爬虫代码封装成exe可执行文件，敬请期待！
+
+**免责声明： 本爬虫纯粹演示，有些爬取是非法的，在此仅做演示，时刻谨记信息安全。**
+

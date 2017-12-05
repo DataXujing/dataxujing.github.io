@@ -1,0 +1,148 @@
+---
+layout: post
+title: "Python处理时间格式"
+img: green.jpg # Add image post (optional)
+date: 2017-11-19 8:00:00
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+tag: [Python]
+---
+**徐静**
+
+![]({{ site.url }}/assets/pic7/output_1.jpg)
+
+Python 处理时间模块有三个，datatime,time,calender,融会贯通三个模块，才能随心所欲的用Python处理时间，本文主要梳理三个模块的
+涉及脉络，在需要的时候, 方便记忆三个模块的API。
+
+## 1 概述
+
+datetime模块主要是用来表示日期的，就是我们常说的年月日时分秒，calendar模块主要是用来表示年月日，是星期几之类的信息，time模块主要侧重点在时分秒，粗略从功能来看，我们可以认为三者是一个互补的关系，各自专注一块。方便用户依据不同的使用目的选用趁手的模块。
+
+## 2 从time模块说起
+
+为了学习time模块，我们需要先知道几个与时间相关的概念：
+
+### 1)， epoch
+
+假设我们要将时间表示成毫秒数，比方说1000000毫秒，那有一个问题必须解决，这个1000000毫秒的起点是什么时间，也就是我们的时间基准点是什么时间？好比我说你身高1.8米，那这个身高是指相对于你站立的地面说的。这个时间基准点就是epoch，在Unix系统中，这个基准点就是1970年1月1日0点整那个时间点。
+
+### 2), GMT, UTC
+
+上面我们说epoch表示1970年的起始点，那这个1970年又是相对于哪个基准时间呢？一般来说，就是相对于格林尼治时间，也叫做GMT(Greenwich Mean Time)时间，还叫做UTC(Coordinated Universal Time)时间，为啥一个时间基准有两个名字？历史上，先有的GMT,后有的UTC.
+UTC是我们现在用的时间标准，GMT是老的时间计量标准。UTC是根据原子钟来计算时间，而GMT是根据地球的自转和公转来计算时间。
+所以，可以认为UTC是真正的基准时间，GMT相对UTC的偏差为0。
+在实际中，我们的计算机中有一个硬件模块RCT，里面会实时记录UTC 时间，该模块有单独的电池供电，即使关机也不影响。
+有了epoch这个时间基准，又有了UTC这个基准的基准，我们就可以精确地表示一个时间了。
+
+### 3), DST, tzone
+
+尽管我们已经可以精确地表示一个时间，很多情况下，我们还是要根据地区实际情况对时间进行一个调整，最常见的就是时区：tzone，相信大家都比较熟悉。
+此时，当我们说5点5分这个时间时，还需加上是哪个时区的5点5分才能精确说明一个时间。
+
+另外一个对时间做出调整的就是DST。
+DST 全称是Daylight Saving Time，是说，为了充分利用日光，减少用电，人为地对时间做出一个调整，这取决于不同国家和地区的政策法规。比如说，假设你冬天7点天亮起床，但夏天6点天亮，那么在夏天到来时人为将时间加1个小时，这样就可以让你还是觉得7点起床，但实际上是提前一个小时了。
+
+那么，好奇的我们，一定要问一问，Python是如何知道tzone和DST这两个的值呢？答案是通过环境变量。
+这里我们只以linux为例来说明一下。
+在linux中有TZ环境变量，其值类似这样:
+CST+08EDT,M4.1.0,M10.5.0，这个字符串可以做如下解读，用空格分开他们，分成三部分
+CST+08 EDT, M4.1.0,M10.5.0
+
++ 第一部分中的CST表示时区的名字，即China Standard Time，也就是我们说的北京时间，+8表示北京时间加上8小时就是UTC时间
+
++ 第二部分EDT表示DST的名字，我们说DST是因各个国家地区的政策法规不同而不同的，EDT后面也可以像CST后面一样加一个时间调整值，但由于我们国内只在86年到92年实行过一段时间DST，现在已经废止，所以后面不用加调整时间。
+
++ 第三部分表示的是实行DST的开始和结束时间，我们就不细解读了。
+
+
+### 4)，时间的表示，获取，转换
+
+time模块中获取时间的基本方法是t = time.time()，它返回的是从epoch到现在的秒数(用浮点数表示)，用的是UTC时间。
+我们自然而然地想把这个秒数转为年月日时分秒的形式，而这种转换又分两种，一种还是用UTC时间，一种用我们所在时区进行调整后的时间。
+time模块给我们提供了两个方法，time. gmtime(t)，time.localtime(t)，二者都返回一个类struct_time的实例，该实例具有如下属性:
+
+![]({{ site.url }}/assets/pic7/output_2.jpg)
+
+相比用秒数表示的时间，这样的表示更适合我们理解。
+这两个函数如果调用时不传参数，它们内部会调用time.time()，并用返回的秒数做转换。
+相反的，Python同样提供了将这两种struct_time转为秒数的方法。
+calendar.timegm()方法用来把UTC的struct_time(gmtime的返回对象)转为从epoch开始的秒数，
+time.mktime()用来把用时区调整过的struct_time(即localtime的返回对象)对象转为从epoch开始的秒数，
+也就是说mktime方法会先找到系统中的时区和DST信息，并利用这个信息对struct_time进行调整后再换算成秒数。
+
+另一种常见的需求是在时间和表示时间的字符串之间进行转换。
+time模块中的strftime和strptime就是做这个用的。
+看名字大家就应该知道它们的含义，
+strftime 即 string format time，用来将时间格式化成字符串
+strptime 即string parse time，用来将字符串解析成时间。
+需要注意的是，这里的时间都是struct_time对象。
+关于怎么格式化时间，是很简单的知识，这里就借用官网文档的内容了。
+
+![]({{ site.url }}/assets/pic7/output_3.jpg)
+
+除了这两个函数，time模块中还提供了两个简便方法，来帮助将时间转为字符串
+asctime用来将一个struct_time对象转为标准24字符的字符串，如下所示:
+Sun Jun 20 23:21:05 1993，
+ctime方法与asctime作用相同，只不过它接收的是秒数，在内部，会先把秒数通过localtime转为struct_time，再往后就与asctime一样了。
+
+以上就是time模块的核心内容。
+
+## 3 datetime模块
+
+### 1)，概览
+
+time模块解决了时间的获取和表示，datetime模块则进一步解决了快速获取并操作时间中的年月日时分秒信息的能力。
+简单说，该模块核心的类就三个，date类表示年月日，time类表示时分秒毫秒，这里不要和time模块搞混淆了。datetime类就是date和time的组合。
+
+有一点需要提前说明一下，time类和datetime类都有一个属性，它的值是一个tzinfo对象，里面包含了该time或者datetime的时区信息，一般称这个time或者datetime对象是aware的，它能够准确换算成自epoch开始的秒数。
+如果该属性设置为None，那么，这时的time对象或者datetime对象就没有时区信息，具体它表示的是local time还是utc time，需要我们自己在程序中去决定。
+这里我们所说的local time是指我们所在时区的时间， utc time指的就是国际标准时间，也就是格林尼治时间。下文同。
+请记住一点，date中是没有时区信息的。
+
+### 2)，从创建datetime开始
+
+创建datetime对象，我最常用的办法如下
+dt=datetime.datetime.fromtimestamp(time.time())，
+以上，time.time()获得自epoch开始的秒数，fromtimestamp方法会将这个秒数转变成一个datetime对象。
+这里有一个问题，这个datetime对象究竟是utc的还是local的？
+答案是local的，这是该方法的默认行为。如果你在fromtimestamp方法中传入一个表示时区的参数，即tzinfo对象，就会按传入的时区信息进行转换。
+获得表示当前local时间的datetime对象，还有两个简便方法：
+datetime. datetime. now()，
+datetime. datetime. today()。
+以上我们得到的都是local的datetime对象，如何获得utc的datetime对象呢？有两个办法:
+datetime. datetime. utcfromtimestamp(),
+datetime. datetime. utcnow()。
+
+我们还可以从字符串中创建datetime对象，
+方法为datetime.striptime(date_string, format)
+其内部还是先调用的time模块中的striptime方法，获取struct_time对象，再利用struct_time对象中的年月日时分秒信息构建datetime对象。
+同样的，datetime类也提供了strftime()，asctime()，ctime()方法，相信不说你也知道是做什么的了。
+
+datetime类还提供了一个combine方法，用来将一个date对象和一个time对象组合成一个datetime对象。
+需要注意的是，datetime模块中出现timestamp时，一般可将其理解成time.time()返回的秒数.
+
+### 3)，date和time的创建
+
+date对象的创建和datetime非常相似，
+datetime. date. today()，
+datetime.date.fromtimestamp()都可以创建一个date对象。
+当然，你也可以通过构造方法传入年月日来创建date对象。
+相比之下，time对象的创建就很有限，只能通过
+datetime.time([hour[, minute[, second[, microsecond[, tzinfo]]]]])
+这个方法创建。
+
+### 4)，以上三个对象的操作和timedelta类
+
+在实际使用中，我们有一大块需求就是对日期进行比较和加减运算。得益于Python的操作符重载能力，Python中可以方便地对
+date对象之间，或者datetime对象之间进行小于(<)比较和减法(-)操作。
+注意，这里仅限于同类对象之间，而且，不包括time对象之间。
+两个date对象作减，或者两个datetime对象之间作减，差值用一个timedelta对象表示。
+同理，一个date 对象或者datetime对象也可以加或者减一个timedelta对象。
+一个timedelta对象含有三个属性:days,seconds, microseconds,days属性可以取负值，另外两个属性都只能是正值。
+你可以用total_seconds()方法获得一个timedelta对象的秒数表示。
+两个timedelta对象之间可加，可减，但不能做大小比较，因为这样没什么意义。
+一个timedelta对象还可以与整数相乘，或通过//操作与一个整数相除。
+还可以取反，或者用abs函数获得绝对值
+
+## 4 总结
+
+本文的目的不在于详细说明Python处理时间日期的API如何使用，而是想通过一个概览的形式，让大家抓住time和datetime模块的设计结构，从而能够清楚这些模块提供了哪些能力，在需要的时候能够想起来去用，至于查详细的API，应该是可以轻松解决的。

@@ -1,0 +1,103 @@
+---
+layout: post
+title: "20个超牛X的开源小工具-1"
+img: qiutian.jpg # Add image post (optional)
+date: 2017-11-21 9:00:00 
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+tag: [开挂小工具]
+---
+**徐静**
+
+列举网上找到的作为程序猿，数据分析师必备的一些牛X小工具，都是开源的幺！
+
+1.**Autojump**
+
+有时候cd到某个目录要好几层，用Autojump: A cd command that learns：https://github.com/wting/autojump可以一步到位，安装之后，第一次需要手动cd，以后就可以j longdir即可。
+
+2.**Copy as Markdown**
+
+对于经常用Markdown写文档的人来说，复制网页链接之后还要插入到[]()里，实在麻烦。Copying Link, Image and Tab(s) as Markdown：https://github.com/chitsaou/copy-as-markdown解决这个头疼的问题。
+
+3.**Github Hovercard**
+
+经常混迹于Github人士会浏览无数的Repo，有时候只想大致看看Repo的信息，又懒惰打开那个网页。此时Github Hovercard：https://github.com/Justineo/github-hovercard 是你的不二之选。只需要把鼠标悬停在仓库链接即可。
+
+4.**Octotree**
+
+想看看Github上开源的代码，又不想一层层目录点下去，此时Octotree: Code tree for GitHub：https://github.com/buunguyen/octotree正好解决这个难题。
+
+5.**OctoLinker**
+
+在Github上的代码，经常会看到import ...，习惯了IDE的你，是不是忍不住跳到那个类？OctoLinker：https://github.com/OctoLinker/browser-extension满足你的这个需求。**也支持Python**。
+
+6.**Web Clipper**
+
+看到一篇好文章，保存链接不放心，怕链接失效；复制粘贴太麻烦。用Evernote Web Clipper：https://evernote.com/intl/zh-cn/products/webclipper/，直接保存富文本格式的文章，还只能去除广告，好用。
+
+7.**Json Viewer**
+
+在浏览器上返回的Json文件，如果没有格式化太难看清其结构，利用Json Viewer：https://github.com/tulios/json-viewer插件，就明了多了。
+
+8.**csvkit**
+
+如果你做数据分析，这个命令行工具csvkit：https://github.com/wireservice/csvkit/tree/1.0.2 你一定喜欢。《Data Science at Command Line》一书推荐，很好用。
+
+9.**Quicklook**
+
+工作中会遇到各种各样格式的文件，比如代码、Json、csv、Excel、markdown文档等。很多时候只想看大概信息，就是quicklook一下，不想打开编辑，这时候Quicklook Plugins: List of useful Quick Look plugins for developers：https://github.com/sindresorhus/quick-look-plugins特别好用，官网上有很丰富的例子。
+
+
+10.**Xshell Xftp**
+
+免费软件 Xshell 和 Xftp 都是 NetSarang 出品的优秀网络管理、安全传输工具。Xshell 是一个免费的安全终端仿真器，可以作为 SSH、TELNET 或 RLOGIN 的终端模拟，能够从 Windows 平台安全连接 Linux 服务器，Xftp 则是安全传输客户端，支持 FTP 和 SFTP 协议，两者都支持标签化的会话窗口。如果你的项目部署到Liunx下面，这样的工具你少不了的。
+
+11.**Axure RP Pro**
+ 
+这个做产品的用的比较多，但是程序员也需要画一下自己的图。Axure RP Pro 是一个产品经理必备的交互原型设计工具，能够高效率制作产品原型，快速绘制线框图、流程图、网站架构图、示意图、HTML 模版等。
+
+12.**FastStone Capture**
+ 
+这是我觉得最好的截图工具了，没有之一。FastStone Capture 是一款极好用的图像浏览、编辑和截屏工具，支持 BMP、JPG、JPEG、GIF、PNG、TIFF、WMF、ICO 和 TGA 在内的主流图片格式，其独有的光滑和毛刺处理技术让图片更加清晰，提供缩放、旋转、剪切、颜色调整功能。
+
+13.**有道云笔记**
+ 
+有道云笔记采用了增量式同步技术，即每次只同步修改的内容而不是整个笔记。“三备份存储”技术将用户的数据在三台服务器上进行备份存储，这样即使有1-2台机器发生故障也能有效保障用户数据的安全性和稳定性，该技术还便于未来系统存储规模的扩大和数据处理能力的提高。
+有道云笔记为用户提供了高达2G的初始免费存储空间。并且随着在线时间的增长，登陆账号所对应的储存空间也同步增长。有道云笔记支持多种附件类型，包括图片、PDF、Word、Excel、PowerPoint等。同时上线的还包括网页剪报功能，即通过收藏夹里的一段JavaScript代码将网页里的信息一键抓取保存至有道笔记里，并可对保存的网页进行二次编辑。
+
+14.**Mindjet MindManager**
+ 
+Mindjet MindManager是一款优秀的思维导图和知识管理软件，能够帮助你将想法和灵感以清晰的思维导图的形式记录下来，这对梳理工作计划和规划很有帮助，广泛应用于研究、组织、解决问题和决策中。使用MindManager能够快速、轻松创建优雅、漂亮的思维导图，有效完成信息的捕捉、分析和重新利用，另外MindManager也能与Microsoft Office集成，实现信息图表的导入导出、知识的创新和分享。
+
+15.**Source Code Pro**
+ 
+每一位程序员都有一套自己喜爱的代码编辑器与编程字体，譬如我们之前就推荐过一款“神器”级别的代码编辑器 Sublime Text 2，而今天我们则推荐一款相当不错的编程字体 —— Source Code Pro！
+Source Code Pro 是由大名鼎鼎的 Adobe 公司发布的一款开源且完全免费的等宽编程字体，它非常适合用于阅读代码，支持 Linux、Mac OS X 和 Windows 等操作系统，而且无论商业或个人都可以免费使用，相当厚道。这款字体和微软的 Consolas 一样均定位于“编程字体”，相信作为天天接触代码的开发者，你肯定不会错过这一新选择吧……
+
+16.**Notepad++**
+ 
+Notepad++是一套非常有特色的自由软件的纯文字编辑器(许可证:GPL)，有完整的中文化接口及支持多国语言编写的功能(UTF8 技术)。它的功能比 Windows 中的 Notepad(记事本)强大，除了可以用来制作一般的纯文字说明文件，也十分适合当作编写电脑程序的编辑器。Notepad++ 不仅有语法高亮度显示，也有语法折叠功能，并且支持宏以及扩充基本功能的外挂模组。
+Notepad++是一款非常有特色的编辑器，是开源软件，可以免费使用。支持的语言: C, C++ , Java ,pascal, C#, XML,SQL,Ada, HTML, PHP, ASP, AutoIt, 汇编, DOS批处理, Caml, COBOL, Cmake, CSS, D, Diff,ActionScript, Fortran, Gui4Cli, HTML, Haskell, INNO, JSP, KIXtart, LISP, Lua, Make处理(Makefile), Matlab,INI文件, MS-DOS Style, NSIS, Normal text, Objective-C, Pascal,Python,Javascript，VerilogHaskellInnoSetupCMake，
+VHDLAdaCaml、AutoItKiXtart、Matlab.
+
+17.**Stylify Me**
+
+在设计网页时，最重要的一项便是网页的配色，颜色的使用在网页制作中起着非常关键的作用，不同的网站有着自己不同的风格，也有着自己不同的颜色。今天给大家介绍一个在线生成网站配色的工具——Stylify Me。
+Stylify Me，它可以获取帮我们获取一个网站的配色，字体，大小等风格信息。当你看到一个网站，对他的配色，字体等样式信息非常感兴趣，只需要输入网址，即可分析出网页使用的所有颜色，包括背景颜色、文字颜色、字体、字体大小等样式，生成的结果还可以通过 PDF 格式下载保存，非常方便。
+
+18.**VPN Gate Client**
+
+内地的网友都知道像Fackbook、Twitter、Youtube这类网站，我们是无法访问的。要想浏览这类网站需要使用国外代理IP或者VPN。今天给大家介绍一款免费且不限制流量的VPN工具——VPN Gate
+VPN Gate 是日本国立筑波大学的一项学术研究、实验计划，主要目的为「推广全球分散式公共 VPN 中继伺服器知识」，简单来说，VPN Gate 网站上会列出目前可用的公共 VPN 中继伺服器列表，使用者能自由选择要进行连线的伺服器，无需注册、也不用付费，这些 VPN 都是由来自世界各地的自愿者提供，会不断更新。
+
+19.**流程图visio**
+
+程序员做流程图的软件，很少有几款可以和Visio媲美的。
+它可以将复杂信息、系统和流程可视化、分析，受到大量程序员的喜爱。
+
+20.**脑图： XMind**
+著名互联网媒体Lifehacker对它高度评价：最佳头脑风暴和思维导图工具。
+程序员要做某个模块的设计或者流程图，有时候就需要用到它。
+
+
+
+

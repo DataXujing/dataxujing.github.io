@@ -1,0 +1,23 @@
+---
+layout: post
+title: "深度学习之RNN"
+img: indonesia.jpg # Add image post (optional)
+date: 2017-11-15 10:00:00
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+tag: [Deep Learning, Python,R]
+---
+[【学习资料】](http://note.youdao.com/noteshare?id=c5a8a21946b3bd25b5c06cb4a9fdefdb)
+
+*课程目录*
+
++ 扉页
+
++ 0.循环神经网络简介
+
++ 1.常用循环神经网网络结构
+
++ 2.循环神经网络举栗
+
++ 3.递归神经网络简介与结构
+
++ 4.参考文献
