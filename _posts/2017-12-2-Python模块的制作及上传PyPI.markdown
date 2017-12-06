@@ -138,7 +138,7 @@ setup(name='Pytestxj',
 
 去自己的账号下看一下
 
-![]({{ site.url }}/assets/bowen16/output_6.png)
+![]({{ site.url }}/assets/bowen16/output_6.png){:height="100%" width="90%"}
 
 恭喜你成功了。
 

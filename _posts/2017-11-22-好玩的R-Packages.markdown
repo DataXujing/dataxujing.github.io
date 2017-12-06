@@ -40,7 +40,9 @@ R语言当中，我们是可以自定义我们的启动环境。R在启动时，
 ```r
 .First <- function(){  
     library(praise)  
-    cat(praise("${EXCLAMATION}! ${EXCLAMATION}! 徐静相信自己你一定能成为大牛 ${adverb_manner}!"),"\n",praise("相信自己，相信自己"),"\n",praise("重要的事情说三遍"),"\n",date(),"\n")
+    cat(praise("${EXCLAMATION}! ${EXCLAMATION}! 徐静相信自己你一定能成为大牛 
+    ${adverb_manner}!"),"\n",praise("相信自己，相信自己"),
+    "\n",praise("重要的事情说三遍"),"\n",date(),"\n")
 }
 ```
 Wow,被加油打气了,你可以按照自己的需求替换。
@@ -56,11 +58,11 @@ https://github.com/yihui/fun
 
 + demo(ChinaHeart2D)
 
-![]({{site.url}}/assets/bowen12/output_5.png)
+![]({{site.url}}/assets/bowen12/output_5.png){:height="50%" width="90%"}
 
 + demo(ChinaHeart3D)
 
-![]({{site.url}}/assets/bowen12/output_6.png)
+![]({{site.url}}/assets/bowen12/output_6.png){:height="50%" width="90%"}
 
 + 还有其他奇葩的demo()绘图，在这里不演示了
 

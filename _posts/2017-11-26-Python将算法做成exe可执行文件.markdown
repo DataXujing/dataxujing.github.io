@@ -67,10 +67,10 @@ pyinstaller-script.py: error: the following arguments are required: scriptname
 如果该过程无错误正常运行，则在E:/appexe文件夹下会出现：spyder.spec,build(临时文件最后可删除)，dist文件，dist文件中有封装好的可执行文件，如下图所示：
 
 
-![]({{ site.url }} /assets/bowen14/output_3.png)
+![]({{ site.url }} /assets/bowen14/output_3.png){:height="50%" width="90%"}
 
 
-![]({{ site.url }} /assets/bowen14/output_4.png)
+![]({{ site.url }} /assets/bowen14/output_4.png){:height="50%" width="90%"}
 
 
 单击dist文件下，spyder.exe即可脱离python环境镜像模拟登录爬虫，非常炫酷。

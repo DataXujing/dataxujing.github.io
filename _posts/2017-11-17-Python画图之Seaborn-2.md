@@ -68,7 +68,7 @@ with sns.axes_style("ticks"):
 plt.show()
 ```
 
-![]({{ site.url }}/assets/seaborn2/output_1.png)
+![]({{ site.url }}/assets/seaborn2/output_1.png){:height="50%" width="90%"}
 
 当然，我们也可以关闭核密度估计fit曲线，直接去看直方图分布(histograms)。seaborn在distplot function的API中给出了kde和rug这两个参数，分别对应kernel density和rugplot(也就是在坐标轴上绘制出datapoint所在的位置)。
 我们单独取出徐汇区(Xuhui)的数据，对kde和rug这两个参数进行设置，做出的直方图如下。
