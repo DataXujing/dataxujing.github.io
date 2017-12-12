@@ -1,0 +1,147 @@
+---
+layout: post
+
+title: "Python与R的任务进度管理"
+
+img: beijiguang.jpg 
+
+date: 2017-12-11 9:00:00 
+
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+
+tag: [R,Python]
+---
+
+**徐静**
+
+学习 R语言中文社区 文章总结
+
+
+一直觉得运行代码的时候，如果有一个提示任务运行进度的进度条提示就好，很多时候我们的程序运行时间普遍较长，如果程序运行没有任何提示，那简直是一场噩梦，根本不知道到底是程序在偷懒还是真的卡住了，而如果再代码里写print函数，循环较多的话，你的屏幕会被打印的提示文本瞬间刷屏。在前期开发的几个R包及Python模块中也想嵌入一些任务管理进度条，最终以失败放弃了。
+
+看到杜雨大神的文章后，今天让我们看看R与Python中做任务处理，进程处理的一些简单交互界面。
+
+这里仅介绍简单的用法，满足日常任务进度提示就好了。
+
+```r
+library(tcltk)
+library(tcltk2)
+```
+主要掌握以下两个主要函数：
+
+**设置进度条的格式**
+
+```r
+tkProgressBar(
+    title = "R progress bar",   #任务进度名称
+    label = "",                 #任务进度标签
+    min = 0,                    #初始进度
+    max = 1,                    #末尾进度
+    initial = 0,                #起始位置
+    width = 300                 #进度条宽度
+    )
+
+```
+
+**开启进度条**
+
+```r
+setTkProgressBar(
+    pb,              #可用进度条
+    value,           #进度值
+    title = NULL,    #标题
+    label = NULL     #标签
+    )
+```
+
+```r
+library("rvest")
+library("downloader")
+url<-"https://www.zhihu.com/question/35931586/answer/206258333"
+link<- read_html(url)%>% html_nodes("div.RichContent-inner>span")%>%
+     html_nodes("img")%>%html_attr("data-original") %>% na.omit   
+
+link<-link[seq(1,length(link),by=2)] %>% sample(size=10)                
+Name<-sub("https://pic\\d.zhimg.com/v2-","",link)    
+dir.create("D:/R/Image/zhihu0807")            
+setwd("D:/R/Image/zhihu0807")
+
+```
+
+```r
+plot.new()
+pb<-tkProgressBar("进度","已完成 %",0,100)     
+
+for(i in 1:length(link)){
+    info <- sprintf("已完成 %d%%",round(i*100/length(link)))
+    setTkProgressBar(pb,i*100/length(link),sprintf("进度 (%s)",info),info)
+    download(link[i],Name[i], mode = "wb")
+    Sys.sleep(0.5)
+} 
+
+close(pb)  
+#关闭进度条(这个要等任务完成再写，不要写在函数里哈)
+```
+
+而tcltk2包则可以自定义更多的进度条属性和外观界面，使得进度条根据个性化。
+
+```r
+library(tcltk2)
+```
+
+```r
+###开启进度条
+root <- tktoplevel()
+l1   <- tk2label(root)
+pb1  <- tk2progress(root,length=300)
+tkconfigure(pb1,value=0,maximum=9)
+tkgrid(l1, row = 0)
+tkgrid(pb1,row = 1)
+```
+
+```r
+plot.new()
+for(index in 1:length(link)){
+    download(link[i],Name[i], mode = "wb")
+    Sys.sleep(0.5)    
+    ###进度管理：
+    tkconfigure(l1, text = paste("Index",index))
+    tkconfigure(pb1,value=index-1)
+    Sys.sleep(0.5)
+}
+tkdestroy(root)   
+#关闭进度条
+
+```
+
+是不是很人性化呀~~~以后运行大型程序，再也不会心里没底儿啦，看着进度条就可以知道你的程序到底运行到多少啦。
+
+既然R语言可以执行进度管理，相比Python里面肯定也可以实现的，前期自己也在网上搜罗了好多实现的代码，感觉或多或少有些复杂。
+
+```python
+import os
+import re
+import time
+import sys
+import urllib 
+import requests
+import random 
+from bs4 import BeautifulSoup
+```
+
+```python
+
+url="https://www.zhihu.com/question/35931586/answer/206258333"
+header = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) 
+AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.104 Safari/537.36'}
+page=requests.get(url,headers=header)
+soup=BeautifulSoup(page.text,'lxml')
+link_list=[pip.get('data-original') for pip in soup.select("div[class='RichContent-inner'] 
+span img")]
+link_list=random.sample(link_list,10)  
+os.makedirs("D:/Python/zhihu0807")
+os.chdir('D:/Python/zhihu0807')
+
+```
+
+要想制作出专业美观的任务进度管理程序，有很多第三方包可以用，甚至可以自己写带有弹出功能的工具条，只是那样就失去简便性了， 感兴趣的可以自行探索！
