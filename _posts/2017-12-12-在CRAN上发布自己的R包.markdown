@@ -1,0 +1,178 @@
+---
+layout: post
+title: "在CRAN上发布自己的R包"
+img: xizang0.jpg 
+date: 2017-12-12 9:00:00 
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+tag: [R,CRAN,Package]
+---
+
+**徐静**
+
+之前开发过六七个R包都是通过Git托管在Github,或以SVN 为基础的 R-Forge 上，CRAN对包的审核会更严格，有专门工作人员分别负责Linix和Windows包的审核工作。我们以一个例子来说明如何把自己的R包上传到CRAN.
+
+## R包的基本构造
+
+R包的基本构造我觉得就没必要在这里说了，写过R包的小朋友都有很明了，不过还是列一下做简单说明，具体的参考[R-exts](https://cloud.r-project.org/)内有详细的介绍。
+
+```r
+testR(包的名字，这里包的名字叫testR)
+|
+|--DESCRIPTION(描述文件，包括包的名字，
+                  版本号，标题，描述，依赖关系)
+|--R(函数源文件)
+   |--function1.R
+   |--function2.R
+   |--...
+|--man(帮助文档)
+   |--function1.Rd
+   |--function2.Rd
+   |--testR-package.Rd
+   |--...
+|--NAMESPACE(命名空间)
+|--vignettes(包的描述文件，可以用rmarkdown写)
+|--src(非R脚本eg.C.C++,Python)
+|--data(R包中的数据，最好是.rda格式)
+|--demo(R包中的demo)
+|--test(R包中的测试代码)
+|--...
+```
+
+具体这些文件怎么写要自己去看。
+
+## 一个栗子演示
+
+1.首先创建一个空的R包（或者用代码：`devtools::create('E:/Github/testR')`)
+
+![]({{site.url}}/assets/bowen19/output1.png)
+
+2.编写R函数和函数说明文档
+
+![]({{site.url}}/assets/bowen19/output2.png)
+
+3.运行`devtools::document()`
+
+生成的文档在\man目录下，此例中生成了hello.Rd文件，add_numbers.Rd文件。 
+重新建立包，执行?testR即可预览生成的R文档，此时的命名空间也发生了一些变化。尝试了一下但是不知道包的
+说明文档如何用roxygen2去生成（再研究一下），一种快捷的方式是在man文件加下自建
+testR-package.Rd文件，内容类似于其他.Rd文件。关于roxygen2的使用可以参考详细的教程。
+最终结果如下：
+
+![]({{site.url}}/assets/bowen19/output3.png)
+
+4.如果与data文件夹
+
+一般来说，为了复用性与测试，需要包中包含一些测试文件。 
+添加数据文件的方法如下，先生成数据文件，然后通过use_data函数添加到testR库中，这样当加载库的时候，相应的数据文件也被加载进来了，可以直接使用。
+
+```r
+number_data = c(2,1)
+devtools::use_data(number_data, testR)
+```
+
+5.如果有test文件夹
+
+每个R函数编写完成后，需要对其进行测试，测试的文件放在\test文件夹下。 
+本例的测试文件为：
+
+```r
+add_number(number_data)
+```
+
+6.如果有非R脚本
+
+此段来自：统计值都，谢益辉大神的文章 （：
+
+在 src 目录下我们可以放置一些其它语言的源代码，里面可能包含一些函数，这些函数在被编译之后，（以 C 语言为例）可以在 R 代码中以.C('routine_name', ..., package = 'pkg')的形式调用，但要注意，如果需要用这个功能，在 R 目录下需要有一个 zzz.R 文件（这个特殊文件是用来在加载包之前加载运行的代码），里面写上：
+
+```r
+.onLoad <- function(lib, pkg) {
+    library.dynam("pkg_name", pkg, lib)  #pkg_name是你的包的名字
+}
+```
+这些内容我没有尝试过，详细内容还请深挖 R-exts
+
+7.还有其他得让文件比如：demo、exec、po和tools等具体用到自己去查。
+
+8.我喜欢最后写DESCRIPTION文档
+
+```r
+Package: testR
+Type: Package
+Title: testR package for xujing
+Version: 0.1.0
+Author: Xujing
+Maintainer: Xujing <xujing@inter-credit.net>
+Description: A test package to cran.
+License: GPL (>= 2)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
+```
+9.每个项目需要有一个完整的说明文档vignettes
+
+生成文档的方法如下：`devtools::use_vignette("testR-tutorial")`
+这是一个rmarkdown文档，你可以编辑描述自己的package
+
+这些东西做好之后就可以生成自己的包，R包的种类有很多比如：
+
++ source包 :  开发时的源代码包，包含R/、DESCRIPTION等
+
++ bundled包：将source包reduced成一个单个文件(.tar), 使用gzip(.gz)压缩成一个.tar.gz文件的包(在linux常看到的包名后缀)，它和source包的区别在于：
+Vignettes被编译成了HTML和PDF文件
+没有了source包中的临时文件 （source包中.Rbuildignore文件中标明的文件被排除在bundled包外）
+
++ binary包：binary包可供没有编译环境的R用户使用，它也是单个文件，但是解压开和source包差别很大 （注意：binary包和平台相关，Mac的包.tgz和Windows的.zip不能通用）
+R/文件夹中并没有R文件，而是3个解析后可供高效调用的文件，这是加载R代码用save()函数保存的结果
+Meta/文件夹包含一些rd文件，这些是包相关的元数据缓存，可以用readRDS()查看文件内容，这些文件加速了包的加载
+html/文件夹包含了HTML帮助需要的文件
+src/目录变成libs/目录，包含了将源代码编译成的库
+inst/的内容被移到了顶层目录
+
++ installed包：installed包是将binary包解压（安装）到特定的库目录，如下图展示了包的不同安装方法
+
+10.Build > Configure Build Tools 路径
+
+现在检查 “Generatedocumentation with Roxygen”选项，并在 Check Package space 下放入“–as-cran”来模拟 CRAN 检查和测试包的操作。
+
+11.进入 Build > Clean and Rebuild 途径。点击这个将创建包并在当前环境下加载这个包。
+
+12.在本地测试你的R包
+
+13.发布包
+
+当你成功创建一个 R 包时，你将乐于将其分享给其他人，以使他们也能用到你包内的函数。在发布包的过程中会用到两大平台：CRAN 和 GitHub.
+
+14.在 CRAN 上发布你的包
+
+将包发布在 CRAN 上是较难的一步，因为在成功发布前要对包进行大量的严格测试。除了通过这些测试，你需要给出关于包的运行的详尽描述。这些描述将存储在 vignettes 文件夹中，你可在主项目目录中创建该文件夹。
+当你已确认你的包在本地模拟测试中运行良好并且正常记录后，你需要进入Build > Build Source Package 路径创建源码包。
+
+在创建完源码包后，你可提交在此（https://cran.r-project.org/submit.html）提交在 CRAN 上发布此包的申请。
+
+按照提示上传 tar 包，填写资料等。有问题的话过不久管理员会发信息到电子邮件，按照电子邮件修改之后再上传
+
+最后你要时长定期更新维护自己的R包，更新维护方法与上述提交方法相同，如果你的R包不做长期维护，CRAN会将你的包下架。
+
+
+## 详细的教程可以参考下面文档：
+
+【1】 [https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Acknowledgements](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Acknowledgements)
+
+【2】 [https://cosx.org/2011/05/write-r-packages-like-a-ninja](https://cosx.org/2011/05/write-r-packages-like-a-ninja)
+
+【3】[https://cosx.org/2013/11/building-r-packages-easily](https://cosx.org/2013/11/building-r-packages-easily)
+
+【4】[http://blog.csdn.net/SunWuKong_Hadoop/article/details/53940204](http://blog.csdn.net/SunWuKong_Hadoop/article/details/53940204)
+
+【5】[http://blog.csdn.net/young_gy/article/details/52700561](http://blog.csdn.net/young_gy/article/details/52700561)
+
+【6】[http://baijiahao.baidu.com/s?id=1563440333409945&wfr=spider&for=pc](http://baijiahao.baidu.com/s?id=1563440333409945&wfr=spider&for=pc)
+
+【7】[http://qianjiye.de/2015/04/r-packages](http://qianjiye.de/2015/04/r-packages)
+
+【8】[http://r-pkgs.had.co.nz/](http://r-pkgs.had.co.nz/)
+
