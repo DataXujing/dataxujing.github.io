@@ -9,7 +9,19 @@ tag: [R,CRAN,Package]
 
 **徐静**
 
-之前开发过六七个R包都是通过Git托管在Github,或以SVN 为基础的 R-Forge 上，CRAN对包的审核会更严格，有专门工作人员分别负责Linix和Windows包的审核工作。我们以一个例子来说明如何把自己的R包上传到CRAN.
+之前开发过六七个R包都是通过Git托管在Github,或以SVN 为基础的 R-Forge 上，CRAN对包的审核会更严格，有专门工作人员分别负责Linix和Windows包的审核工作。我们以一个例子来说明如何把自己的R包上传到CRAN,也写过Python包可以Pip安装（python包的写法在我的个人主页中，如果需要请注明参考来源）
+
+我的**部分**R包和Python包的地址（CRAN包的维护团队最近要休年假（：，所以前几天上传CRAN的包还没有消息，地址就不提供了）：
+
++ [ICIC包](https://github.com/DataXujing/ICSC) R包，实现了基于业务的信用评分卡风空模型，现已部署业务系统，安装方式：`devtools::install_github('DataXujing/ICIC')`
+
++ [idprep包](https://github.com/DataXujing/idprep) R包，身份证号数据的处理和提取，主要用于做快速数据处理和计算，现已部署业务,安装方式：`devtools::install_github('DataXujing/idprep')`
+
++ [jsonr包](https://github.com/DataXujing/jsonr) R包，R数据结构与javascript中的json数据的相互转化与调用，现已部署业务安装方式：`devtools::install_github('DataXujing/jsonr')`
+
++ [LN0SCIs3](https://github.com/DataXujing/LN0SCIs3) R包，某混合分布参数的同时之心区间计算包，还在维护中......,安装方式：`devtools::install_github('DataXujing/LN0SCIs3')`
+
++ [Icics](https://pypi.python.org/pypi/Icics/0.3.3) python包，内涵三个模块，实现了基于内容的只能推荐算法和最有分配方法，提供训练的评价指标，可`pip install Icics`在Python2.7,3.5,3.6中正常使用
 
 ## R包的基本构造
 
