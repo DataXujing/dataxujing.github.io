@@ -97,7 +97,7 @@ app$ignite(showcase = TRUE)
 
 身份验证：
 
-![id验证](({{ site.url }}/assets/bowen20/output1.png))
+![id验证]({{ site.url }}/assets/bowen20/output1.png){:height="100%" width="90%"}
 
 微信服务器传递的消息：
 
