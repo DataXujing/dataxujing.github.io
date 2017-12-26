@@ -1,0 +1,151 @@
+---
+layout: post
+title: "100行代码做业务聊天机器人"
+img: qingcao.jpg 
+date: 2017-12-25 9:00:00 
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+tag: [Python,ItChat,Selenium]
+---
+
+**徐静**
+
+各位小伙伴，感觉好久没有更新我的主页了，主要是最近年末领导们忙着听年度项目总结，说说我近期做的一个比较有意思的项目，结合爬虫和微信做聊天机器人，用到的工具是Python中的两个模块Itchat和Selenium,当然还有爬虫的一些前端技术，另外除了Itchat外还有wxpy也很好用。
+
+这个小项目在爬虫的过程中遇到了一些小问题，爬取是某某银行的某某系统，我们都知道国内的银行们都只支持IE内核的浏览器，数据都是通过JS加载，一种解决办法是通过模拟登陆的办法去做。具体的网页长什么样子就不带大家看了。我在拿到需求的第一件事情是制定整个的项目需求解决方案并和业务部门探讨是否可行，最终的方案大体流程如下：首先业务人员通过微信群推送查询账号，获取微信推送的信息作为爬虫的输入信息，通过模拟登陆爬取业务部门感兴趣的信息，通过自动化的微信推送给相应的业务人员，整个流程就是一个基于微信的问答系统，我权且称为聊天机器人。
+
+项目主要分为两大块，一块是解决微信问题，一块是解决爬虫问题，实际代码只有短短100行，下面就是贴出核心代码的时候了
+
++ 爬虫核心代码
+
+```python
+
+#!/usr/bin/python
+#coding:utf-8
+import itchat
+from itchat.content import  *
+import time
+
+from time import sleep
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.action_chains import ActionChains
+import os
+import sys
+
+
+IEdriver ='D:\IEDriverServer\IEDriverServer.exe'   
+os.environ["webdriver.ie.driver"] = IEdriver  
+driver = webdriver.Ie(IEdriver) 
+#driver = webdriver.Ie(iedriver)
+url='我感兴趣的URL'
+driver.get(url)
+print('Please Input your UserName and Keywords by yourself:(time<=20s)')
+time.sleep(20)
+
+
+#driver.find_element_by_xpath("//*[@id='WANC0000']/DIV/SPAN").click()
+#time.sleep(2)
+#driver.find_element_by_xpath("//*[@id='WANC1002']/DIV/SPAN").click()
+
+def CheckInfo(msg,driver=driver):
+	result_text = {}
+	msg1 = str(msg)
+	for msgi in msg1.split(','):
+		URL1 = '我感兴趣的跳转URL'
+		#ActionChains(driver).key_down(Keys.CONTROL).
+		send_keys("t").key_up(Keys.CONTROL).perform()
+		driver.get(URL1)
+		driver.find_element_by_id("acNo").click()
+		driver.find_element_by_id("acNo").send_keys(msgi)
+		driver.find_element_by_id('queryBtn').click()
+		#driver.find_element_by_xpath
+		("//*[@id='_table_xxx0_1']/TD[8]/A").click()
+		#--
+		
+
+		try:
+            driver.find_element_by_xpath
+            ("//*[@id='_table_xxx0_1']/TD[8]/A").click()
+			#driver.find_element_by_xpath
+			("//*[@id='_table_xxx0_1']/TD[8]/A").click()
+            URL2 = '我感兴趣的跳转URL2'+msgi
+            driver.get(URL2)
+	
+		except:
+			result_text[msgi] = '账号错误,请核对!'
+			#ActionChains(driver).key_down(Keys.CONTROL).
+			send_keys("w").key_up(Keys.CONTROL).perform()
+		else:
+                        time.sleep(0.5)
+                        names = driver.find_element_by_id("custName").text
+                        cardNo = driver.find_element_by_id("acNo").text
+                        currBalt = driver.find_element_by_id("currBalT").text
+                        currBalR = driver.find_element_by_id("currBalR").text
+                        currBalU = driver.find_element_by_id("currBalU").text
+
+                        levBalTot = driver.find_element_by_id("levBalTot").text
+                        rAmt = driver.find_element_by_id("rAmt").text
+                        uAmt = driver.find_element_by_id("uAmt").text
+
+                        result_text[msgi] = '[姓名]'+names+";"+'[账号]'+cardNo+';'+
+                        '[目前余额]'+currBalt+';'+'[余额R]'+currBalR+';'+'[余额U]'+
+                        currBalU+';'+'[分期总余额]'+levBalTot+';'+'[未入账缴款R]'+
+                        rAmt+';'+'[未入账缴款U]'+uAmt
+			#ActionChains(driver).key_down(Keys.CONTROL).
+			#send_keys("w").key_up(Keys.CONTROL).perform()
+		#ActionChains(driver).key_down(Keys.CONTROL).
+		#send_keys("w").key_up(Keys.CONTROL).perform()
+		
+	
+	return result_text
+	#print(result_text)
+```
+
++ 微信采用了Itchat模块，淡然可以用R中的Rweixin和Python的wxpy，Itchat有被封网页版的风险
+
+```python
+@itchat.msg_register(itchat.content.TEXT,isGroupChat=True)
+def reply_text(msg):
+	chatroom_id = msg['FromUserName']
+	chatroom_NickName = [item['NickName'] 
+	for item in chatrooms if item['UserName'] == chatroom_id ]
+	username = msg['ActualNickName']
+	print(chatroom_NickName[0]+'@'+username)
+
+	if chatroom_NickName[0] =='我的群名称':
+		itchat.send("[%s]收到我的群名称@%s的信息：
+		%s\n" %(time.strftime("%Y-%m-%d %H:%M:%S",
+                time.localtime(msg['CreateTime'])),username,msg['Text']),'filehelper')
+		return '@%s您的查询结果是:%s' 
+		%(username,CheckInfo(msg['Content']))
+	elif chatroom_NickName[0] !='我的群名称':
+		return 
+
+	        
+
+itchat.auto_login()
+chatrooms = itchat.get_chatrooms
+(update=True, contactOnly=True)
+itchat.run()
+input()
+```
+
+最后合并两部分代码做成可执行文件,测试后业务人员就可以放心使用了，最后贴出几个使用的图片(因涉及信息安全问题，我会马赛克一些敏感信息)
+
+
+![pic1]({{ site.url }}/assets/bowen21/erro2.png)
+
+
+![pic2]({{ site.url }}/assets/bowen21/mul.png)
+
+
+![pic3]({{ site.url }}/assets/bowen21/mul1.png)
+
+
+这样就实现了一个粗略的基于微信的聊天机器人的功能
+
+说明：原创文章，传阅请注明出处，此外基于一些大批量的合法性，本项目的爬取意在提高业务人员的工作效率和自动化，不涉及任何信息买卖和泄露的可能性。
