@@ -1,0 +1,15 @@
+---
+layout: post
+title: "HMM学习-1"
+img: bowen44.jpg
+date: 2018-06-13 12:00:00 
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+tag: [HMM,Python,R,语音识别]
+---
+
+徐静
+
+HMM交流学习第一波
+
+[点我查看并下崽]({{ site.url }}/assets/bowen44/隐马尔可夫模型-1.pdf)
+
