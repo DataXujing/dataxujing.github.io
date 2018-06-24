@@ -1,0 +1,80 @@
+---
+layout: post
+title: "python子线程修改UI界面"
+img: bowen45.jpg
+date: 2018-06-24 12:00:00 
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+tag: [Python,多线程]
+---
+
+徐静
+
+最近在做一个Word提取Excel信息的项目，业务部门是不懂代码的，需要把工具封装成可执行文件，
+并且需要有好的用户体验效果，因为数据量比较大，考虑用户体验因此我们做了三个线程，主线程用来显示和渲染UI界面，转化线程不断地
+把doc文件转化成docx文档，转化好的吧docx文档放在一个队列中，信息提取线程在队列中拿docx文档并转化成Excel，那么问题来了，怎么让软件的使用者知道这批word文档已经转化完成？
+
+我们需要有一个状态栏(除此之外这个项目还有一个输出的日志文件)，但是状态栏是主线程渲染的，子线程(信息提取线程)如何控制UI界面，实时渲染新的UI？
+
+实际很简单，我们一种办法是通过队列传递信息传递给主线程，但这种办法对UI渲染好像不是很好去设计，另一种办法是我们独立新建一个信号和槽函数，然后在修改线程的run方法实现信号的发出(emit)方法，然后在方法中connect该信号即可。这里边有些坑在这里我就不讲了，当你遇到这些坑解决不了的时候，可以联系我，我们一起讨论解决。
+
+最后，附上一个简单的说明该问题的代码：
+
+```powershell
+信号传参类型
+pyqtSignal()                        #无参数信号
+pyqtSignal(int)                     # 一个参数(整数)的信号 
+pyqtSignal([int],[str]              # 一个参数(整数或者字符串)重载版本的信号
+pyqtSignal(int,str)                 #二个参数(整数,字符串)的信号 
+
+pyqtSignal([int,int],[int,str])     #二个参数([整数,整数]或者[整数,字符串])重载版本
+```
+
+```python
+
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+import time
+
+class Mythread(QThread):
+    # 定义信号,定义参数为str类型
+    _signal = pyqtSignal(str)
+
+    def __init__(self):
+        super(Mythread, self).__init__()
+
+    def run(self):
+        for i in range(2000000):
+            # 发出信号
+            self._signal.emit('当前循环值为:%s' % i)
+            # 让程序休眠
+            time.sleep(0.5)
+
+
+if __name__ == '__main__':
+    app = QApplication([])
+    dlg = QDialog()
+    dlg.resize(400, 300)
+    dlg.setWindowTitle("自定义按钮测试")
+    dlgLayout = QVBoxLayout()
+    dlgLayout.setContentsMargins(40, 40, 40, 40)
+    btn = QPushButton('测试按钮')
+    dlgLayout.addWidget(btn)
+    dlgLayout.addStretch(40)
+    dlg.setLayout(dlgLayout)
+    dlg.show()
+
+
+    def chuli(s):
+        dlg.setWindowTitle(s)
+        btn.setText(s)
+
+    # 创建线程
+    thread = Mythread()
+    # 注册信号处理函数
+    thread._signal.connect(chuli)
+    # 启动线程
+    thread.start()
+    dlg.exec_()
+    app.exit()
+```
