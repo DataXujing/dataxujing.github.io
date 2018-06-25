@@ -1,0 +1,31 @@
+---
+layout: post
+title: "HMM学习-2"
+img: bowen46.jpg
+date: 2018-06-25 12:00:00 
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+tag: [HMM,Python,R,语音识别]
+---
+ 
+<p><center><h2>隐马尔科夫模型-2</h2></center></p>  
+<object classid="clsid:CA8A9780-280D-11CF-A24D-444553540000" width="100%" height="720">  
+<param name="SRC" value="{{ site.url }}/assets/bowen46/HMM-2.pdf" >  
+<embed width="100%" height="600" fullscreen="yes" src="{{ site.url }}/assets/bowen46/HMM-2.pdf">  
+<noembed>  
+</noembed>  
+ 
+</object> 
+
+<footer>
+<center>
+  <p>Posted by: 徐静</p>
+  <p>Reference: <a href="http://dataxujing.coding.me/HMM-Learn-1/">http://dataxujing.coding.me/HMM-Learn-1/</a></p>
+  <p>Contact information: <a href="https://dataxujing.github.io">https://dataxujing.github.io</a>.</p>
+  </center>
+</footer>
+
+
+ 
+
+
+
