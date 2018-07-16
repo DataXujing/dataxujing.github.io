@@ -11,6 +11,14 @@ layout: default
       </div>
       <div class="post_description">
         <p class="post_meta">{{page.date | date: '%Y, %b %d'}}</p>
+	<p class="post_meta"><span class="pause">  </span>
+        浏览量：<span data-hk-page="current"> - </span>次<span class="pause"> | </span>
+        {% if page.labels %}
+            {% for label in page.labels %}
+                <a class="label" href="{{ site.baseurl }}/all-articles/?label={{ label }}">{{ label }}</a>
+            {% endfor %}
+        {% endif %}
+    </p>
         <h1 class="post_title">{{page.title}}</h1>
       </div>
     </header> <!-- End Header -->
