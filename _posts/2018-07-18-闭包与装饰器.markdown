@@ -1,0 +1,168 @@
+---
+layout: post
+title: "Python闭包与装饰器"
+img: bowen47.jpg
+date: 2018-07-18 12:00:00 
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+tag: [Python]
+---
+
+## 闭包
+
++ 函数内的属性，都是有生命周期的，只存活于函数执行期间
+
++ 内部函数对外部函数作用域李变量的引用。
+
++ 闭包内的比包函数私有化了变量，完成了数据的封装，类似于面向对象
+
++ 闭包在大规模使用时是吃内存的
+
+例子1
+
+```python
+def func():#外部函数
+	a = 1  #外部函数作用域李的变量
+	print("this is func")
+
+	def func1(num):#内部函数
+		print('this is func1')
+		print(num+a)
+
+	return func1  #函数名
+
+# func()#运行外部函数内部函数就被创建了
+# func1()
+
+var = func()
+var(3)
+del var
+```
+
+运行结果
+
+```powershell
+this is func
+this is func1
+4
+```
+
+例子2
+
+```python
+mylist = [1,2,3,4,5]
+
+def func(obj):
+	print('func',obj)
+
+	def func1():
+		obj[0]+=1
+		print("func1",obj)
+
+	return func1
+
+
+var = func(mylist)
+
+var()
+var()
+var()
+```
+运行结果：
+
+```powershell
+func [1, 2, 3, 4, 5]
+func1 [2, 2, 3, 4, 5]
+func1 [3, 2, 3, 4, 5]
+func1 [4, 2, 3, 4, 5]
+```
+明白闭包之后，才可以很好的掌握装饰器的概念。
+
+
+## 装饰器
+
+```python
+@func1
+def func():
+	print("aaa")
+```
+
+不影响原有函数的功能，还能添加新的功能
+
+普通的装饰器
+
+```python
+
+def func1(func):#外部闭包函数的参数是被装饰的函数对象
+	def func2():
+		print('aaabbb')
+		return func()#返回了外部函数接收的被装饰函数的调用
+	return func2
+#func1() takes 0 positional arguments but 1 was given
+#func1(func,arg) missing 1 required positional argument: 'arg'
+
+#return func #返回了函数对象
+#return func() #返回的是一个函数调用
+
+#func1(myprint)() #接收被装饰的函数作为参数，而且还要继续调用一次
+#func2() -> print('aaabbb') -> return myprint()
+
+@func1
+def myprint():
+	print('你好,我是print')
+
+myprint() #func1(myprint)()
+myprint2()
+```	
+
+装饰器函数带参数
+
+```python
+def arg_func(sex):
+	def func1(b_func):
+		def func2(today):
+			if sex == 'man':
+				print('你不可以生娃')
+			if sex == 'woman':
+				print('你可以生娃')
+			today = '5'
+			return b_func(today)
+		return func2
+	return func1
+#arg_func(sex='man')()() > func1
+#func1() > func2
+#func2() > ('你不可以生娃') or print('你可以生娃')  b_func()
+
+@arg_func(sex='man')
+def man(today):
+	print('今天是星期',today)
+	print('好好上班.')
+
+@arg_func(sex='woman')
+def woman(today):
+	print('今天是星期',today)
+	print('好好上班.')
+
+man(today='2')
+woman(today='4')
+```
+
+被装饰的函数带参数
+
+```python
+def func1(func):
+	def func2(x,y):
+		print(x,y)
+		x = 'a'
+		y = 'b'
+		return func(x, y)
+	return func2
+
+@func1
+def mysum(a,b):
+	print( a + b )
+mysum(1,2)
+
+#mysum(a,b) -> func1(mysum)(a,b)
+```
+
+参考：<https://mp.weixin.qq.com/s/cCjJRwt-MvPjO2vhQbr7FQ>
