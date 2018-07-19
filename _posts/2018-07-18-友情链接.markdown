@@ -1,0 +1,16 @@
+---
+layout: post
+title: "近期在其他平台发表的科技文章"
+img: bowen48.jpg
+date: 2018-07-18 14:00:00 
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+tag: [友情链接]
+---
+
+友情链接，把近期在其他平台发布的文章链接一下：
+
+[开发基于GUI的R包(1)](https://blog.csdn.net/kmd8d5r/article/details/80491111)
+
+[开发基于GUI的R包(2)](https://blog.csdn.net/kMD8d5R/article/details/80523367)
+
+[Java调用R与Python](https://yq.aliyun.com/articles/614406?utm_content=m_1000007161)
