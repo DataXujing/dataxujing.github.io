@@ -1,0 +1,251 @@
+---
+layout: post
+title: "ftplib-python与ftp交互"
+img: bowen50.png
+date: 2018-09-03 12:00:00 
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+tag: [ftplib,python]
+---
+
+## ftplib-python与ftp交互
+
+ftplib是python默认安装的一个python模块，可以用来简单实现ftp客户端，用于上传或下载文件。
+
+### 相关方法
+
++ ftp登录链接
+
+```python
+from ftplib import FTP #加载ftp模块
+ftp = FTP() #初始化一个对象
+ftp.set_debuglevel(2) #打开调试级别2，显示详细信息
+ftp.connect("IP","port") #链接ftp server 和端口
+ftp.login('user','password') # 登录用户名和密码
+print(ftp.getwelcome) #打印欢迎信息
+
+ftp.cmd('xxx/xxx') # 进入远程目录
+bufsize = 1024 #设置缓冲区大小
+filename = 'filename.txt' #需要下载的文件名
+file_handle = open(filename,'wb').write # 以写模式在本地打开文件
+
+file.retrbinaly("RETR filename.txt',file_handle,bufsize) # 接受服务器上文件并写入本地文件
+ftp.set_debuglevel(0) # 关闭调试模式
+ftp.quit() #退出ftp
+
+```
+
++ ftp相关命令操作
+
+```python
+
+ftp.cwd(pathname) # 设置FTP当前操作的路径
+ftp.dir() # 显示目录下所有目录的信息
+ftp.nlst() # 获取目录下的文件
+ftp.mkd(pathname) #新建远程目录
+ftp.pwd() #返回当前所在位置
+ftp.rmd(dirname)  # 删除远程目录
+ftp.delete(filename) # 删除远程文件
+ftp.rename(fromname,toname) # 将fromname修改为toname
+ftp.storbinary('STOR filename.txt',file_handle,bufsize)#上传目标文件
+ftp.retbinary('RETR filename.txt',file_handle,bufsize) # 下载ftp文件
+
+ftp.quit() # 发送quit命令给服务器并关闭连接
+ftp.close() # 单方面的关闭连接，不应该在ftp.quit()之后
+```
+
+### Example1: 下载，上传文件
+
+```python
+from ftlib import FTP
+import time
+import tarfile
+
+def ftpconnect(host,username,password):
+    ftp = FTP()
+    ftp.set_debuglevel(2)
+    ftp.connect(host,21)
+    ftp.login(username,password)
+    
+    return ftp
+
+def downloadfile(ftp,remotepath,localpath):
+    bufsize = 1024
+    fp = open(localpath,'wb')
+    ftp.retrbinary('RETR  '+ remotepath,fp.write,bufsize)
+    # 接受服务器上文件并写入文本
+    ftp.set_debuglevel(0) # 关闭调试
+    fp.close() # 关闭文件
+
+
+def uploadfile(ftp,remotepath,localpath):
+    bufsize = 1024
+    fp = open(localpath,'rb')
+    ftp.storbinary('STOR '+ remotepath, fp,bufsize) # 上传文件
+    ftp.set_debuglevel(0)
+    fp.close()
+
+if __name__ == "__main__":
+    ftp = ftpconnect("xxxxx","xxx","xxxxx")
+    downloadfile(ftp,"XXX","XXX")
+    uploadfile(ftp,"xxxx","xxxxx")
+
+    ftp.quit()
+```
+
+### Example2: 上传，下载文件/目录
+
+```python
+from ctypes import *
+import os
+import sys
+import ftplib
+
+
+class myFTP():
+    ftp = ftplib.FTP()
+    bIsDir = False
+    path = ""
+    
+    def __init__(self,host,port='21'):
+        self.ftp.set_debuglevel(2)
+        self.ftp.set_pasv(0) # 0主动模式，1被动模式
+        self.ftp.connect(host,port)
+
+    def Login(self,user,password):
+        self.ftp.login(user,password)
+        print(self.ftp.welcome)
+
+    def DownloadFile(self,LocalFile,RemoteFile):
+        file_handler = open(LocalFile,'wb')
+        self.ftp.retrbinary("RETR s%' %(RemoteFile),file_handler.write)
+        fle_handler.close()
+        return 
+
+
+    def UpLoadFile(self,LocalFile,RemoteFile):
+        if os.path.isfile(LocalFile) == False:
+             raise "这不是一个合法的文件路径" 
+        file_handler = open(LocalFile,"rb")
+        self.ftp.storbinary('STOR s%' % RemoteFile,file_handler,bufSize = 4096)
+        file_handler.close()
+        return         
+
+    def UpLoadFileTree(self, LocalDir, RemoteDir):
+        if os.path.isdir(LocalDir) == False:
+            raise "这不是一个合法的文件夹路径"
+        LocalNames = os.listdir(LocalDir)
+        self.ftp.cwd( RemoteDir )
+        for Local in LocalNames:
+            src = os.path.join( LocalDir, Local)
+            if os.path.isdir( src ): 
+                self.UpLoadFileTree( src, Local )
+            else:
+                self.UpLoadFile( src, Local )
+
+        self.ftp.cwd( ".." )
+        return
+    
+
+    def DownLoadFileTree(self, LocalDir, RemoteDir):
+        if os.path.isdir( LocalDir ) == False:
+            os.makedirs( LocalDir )
+        self.ftp.cwd( RemoteDir )
+        RemoteNames = self.ftp.nlst()  
+
+        for file in RemoteNames:
+            Local = os.path.join( LocalDir, file )
+            if self.isDir( file ):
+                self.DownLoadFileTree( Local, file )                
+            else:
+                self.DownLoadFile( Local, file )
+        self.ftp.cwd( ".." )
+        return
+
+
+    def show(self, list):
+        result = list.lower().split( " " )
+        if self.path in result and "<dir>" in result:
+            self.bIsDir = True
+
+
+    def isDir(self, path):
+        self.bIsDir = False
+        self.path = path
+        #this ues callback function ,that will change bIsDir value
+        self.ftp.retrlines( 'LIST', self.show )
+        return self.bIsDir
+
+    def close(self):
+        self.ftp.quit()
+
+if __name__ == "__main__":
+    ftp = myFtp('*****')
+    ftp.Login('***','***')
+
+    ftp.DownLoadFileTree('del', '/del1')#ok
+    ftp.UpLoadFileTree('del', "/del1" )
+    ftp.close()
+    print "ok!"
+```
+
+
+
+### Example3: 异常处理
+
+
+```python
+import ftplib
+from ftplib imort FTP
+import socket
+import os
+
+
+def ftpconnect(ftp_info):
+    try:
+        ftp = ftplib.FTP(ftp_info[0])
+    except (socket.error, socket.gaierror):
+        raise "ERROR: cannot reach %s" % ftp_info[0]
+        return 
+
+    username = ftp_info[1]
+    passwd = ftp_info[2]
+    try:
+        ftp.login(username, passwd)
+    except ftplib.error_perm:
+        raise "ERROR: cannot login anonymously"
+        ftp.quit()
+        return 
+    return ftp
+
+if __name__ == "__main__":
+    info_list = ["10.19.3.199", "fastupdate_amap", "@utonavi&A.map"]
+    ftp = ftpconnect(info_list)
+    if not ftp:
+        exit(1)
+    bufsize = 1024
+    fname = "20150416113942674.tar.gz"
+    fp = open(os.path.join(".", fname), 'wb')
+    remotefile = os.path.join("/ADF++", fname)
+    ftp.retrbinary("RETR " + remotefile, fp.write, bufsize)
+
+    #是否有目录，没有就创建；有的话看是否有权限创建
+    a = ftp.dir()
+    try:
+        ftp.cwd("jimi")
+    except ftplib.error_perm:
+        try:
+            ftp.mkd("jimi")
+        except ftplib.error_perm:
+            print "WARNING: U have no authority to make dir"
+    finally:
+        ftp.quit()
+
+```
+
+### 参考：
+
+[1]. [FTP例子](tps://www.example-code.com/python/ftp.asp)
+
+[2]. [python ftplib](tps://blog.csdn.net/long_20140901/article/details/53525564)
+
+[3]. [ftplib官网](https://docs.python.org/3.6/library/ftplib.html#ftp-objects)
