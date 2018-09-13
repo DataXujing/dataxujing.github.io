@@ -14,3 +14,7 @@ tag: [友情链接]
 [开发基于GUI的R包(2)](https://blog.csdn.net/kMD8d5R/article/details/80523367)
 
 [Java调用R与Python](https://yq.aliyun.com/articles/614406?utm_content=m_1000007161)
+
+[开放源码.看我如何搭建平台&训练个机器人陪我聊天!](https://mp.weixin.qq.com/s/VpiAmVSTin3ALA8MnzhCJA)
+
+[好文.带你用Python开发个机器学习软件！](https://mp.weixin.qq.com/s/7t0e_hfyDh1b2GPVlzXIMg)
