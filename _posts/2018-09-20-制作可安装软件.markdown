@@ -1,0 +1,106 @@
+---
+layout: post
+title: "安装包制作工具 SetupFactory"
+img: bowen53.png
+date: 2018-09-20 12:00:00 
+description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
+tag: [SetupFactory]
+---
+
+## 介绍
+
+当你生成了exe可执行文件，拷贝给需求方运行时，总感觉到怪怪的，你不是做的软件吗？为什么需要我去找到exe可执行文件运行呢？明显太low. [Setup Factory](https://baike.baidu.com/item/Setup%20Factory?fr=aladdin) 是一个强大的安装程序制作工具。提供了安装制作向导界面，即使你对安装制作不了解，也可以生成专业性质的安装程序。可建立快捷方式，也可直接在 Windows 系统的注册表加入内容，还能在 Win.ini 和 System.ini 内加入设定值，更可以建立反安装选项等等。它内附的向导可以一步步的带领您做出漂亮又专业的安装程序。
+
+本博文将通过一个Python生成的exe可执行文件制作安装程序的过程演示SetupFactory的完美操作。下面截图中使用的 SetupFactory版本为 V9.0.3.0 汉化版。网上可以下载到很多绿色破解版。
+
+
+## 下载安装
+
+setupFactory V9.0.3.0的汉化版本我已上传到百度云盘，大家扩按照下面链接下载安装：链接: <https://pan.baidu.com/s/1UcMhe_8mqf0oAyBZN9E3Fg> 提取码: b36e
+
+
+![]({{ site.url }}/assets/bowen53/p1.png){:height="50%" width="90%"}
+
+![]({{ site.url }}/assets/bowen53/p2.png){:height="50%" width="90%"}
+
+## 详细步骤
+
+step1: 点击“开始新的工程”窗口中的“确定”按钮，进入下一步。
+
+![]({{ site.url }}/assets/bowen53/s1.png){:height="50%" width="90%"}
+
+step2:常规信息,该窗口提供了公司名称、产品名称、产品版本、公司网址等输入框，作为软件包的一部分，在制作完成后安装的过程中界面上会显示这些信息。
+
+![]({{ site.url }}/assets/bowen53/s2.png){:height="50%" width="90%"}
+
+step3:平台,该窗口提供打包软件的运行平台32位或者64位。根据具体的需要选择。
+
+![]({{ site.url }}/assets/bowen53/s3.png){:height="50%" width="90%"}
+
+step4:源文件夹,该步骤提供选择需要打包的文件以及文件夹信息。点击“浏览”按钮，找到目标程序。如果目标文件中包括子文件夹信息，则选中“包括子文件夹中的文件”。点击“下一步”按钮，进入下一步骤。
+
+![]({{ site.url }}/assets/bowen53/s4.png){:height="50%" width="90%"}
+
+step5:窗口设置,该步骤提供为安装软件的窗口设置信息。该步骤不是主要步骤，属于锦上添花的功能，随便设置一下即可。我们就选择“向导”。点击“下一步”按钮。
+
+![]({{ site.url }}/assets/bowen53/s5.png){:height="50%" width="90%"}
+
+step6:“主题”窗口中，提供了主题下拉列表，每选择一种即出现预览效果界面。根据自己的喜好，选择一种。点击“下一步”按钮，进入下一步
+
+![]({{ site.url }}/assets/bowen53/s6.png){:height="50%" width="90%"}
+
+step7:“多语言设置”窗口中提供安装时使用的哪种语言。一般勾选简体中文 “Chinese（Simplified）*”与“繁体中文Chinese（Traditional）”。勾选后在下拉框中选择一种语言作为默认语言，选择简体中文作为默认语言。
+点击“下一步”按钮，进入下一步。
+
+![]({{ site.url }}/assets/bowen53/s7.png){:height="50%" width="90%"}
+
+step8: “从属”窗口中选择的技术是安装软件需要依赖且必须的基础软件。
+
+![]({{ site.url }}/assets/bowen53/s8.png){:height="50%" width="90%"}
+
+step9:“可选功能”窗口中提供选择项，包括卸载功能、记录日志功能、权限限制、软件安装的操作系统等选择功能。点击“完成”按钮完成了基本的打包配置信息。
+
+![]({{ site.url }}/assets/bowen53/s9.png){:height="50%" width="90%"}
+
+step10:基本配置完成后，界面如下图：“存档”选项卡界面中列出了选择的打包文件。点击工具条中的“过滤器”按钮，会筛选出可执行文件。入下图：
+
+
+![]({{ site.url }}/assets/bowen53/s10.png){:height="50%" width="90%"}
+
+step11:选中程序运行主文件“xxx.exe”,双击或者右键点击“文件属性”弹出属性对话框，如下图：
+
+![]({{ site.url }}/assets/bowen53/s11.png){:height="50%" width="90%"}
+
+step12:快捷方式
+
+![]({{ site.url }}/assets/bowen53/s12.png){:height="50%" width="90%"}
+
+step13:安装程序添加序列号
+
+![]({{ site.url }}/assets/bowen53/s13.png){:height="50%" width="90%"}
+
+![]({{ site.url }}/assets/bowen53/s14.png){:height="50%" width="90%"}
+
+step14:构建，生产安装包,以上步骤设置完成后，可以开始生产安装包。点击”工具栏“中的”构建“按钮，弹出”发布向导 - 选择分发媒体“窗口。这里选择了自定义（存储在本地文件系统中），文件大小设置为1000M。根据安装包文件的大小，设置合适的大小。点击”下一步“按钮，进入下一步。
+
+![]({{ site.url }}/assets/bowen53/s15.png){:height="50%" width="90%"}
+
+step15:完成
+
+![]({{ site.url }}/assets/bowen53/s16.png){:height="50%" width="90%"}
+
+## 安装
+
+![]({{ site.url }}/assets/bowen53/p3.png){:height="50%" width="90%"}
+
+![]({{ site.url }}/assets/bowen53/p4.png){:height="50%" width="90%"}
+
+![]({{ site.url }}/assets/bowen53/p5.png){:height="50%" width="90%"}
+
+![]({{ site.url }}/assets/bowen53/p6.png){:height="50%" width="90%"}
+
+![]({{ site.url }}/assets/bowen53/p7.png){:height="50%" width="90%"}
+
+## 参考文献：
+
+<https://blog.csdn.net/SomeOneMT5/article/details/79685898>
