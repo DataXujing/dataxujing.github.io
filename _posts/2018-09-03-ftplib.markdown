@@ -4,7 +4,7 @@ title: "ftplib-python与ftp交互"
 img: bowen50.png
 date: 2018-09-03 12:00:00 
 description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
-tag: [ftplib,python]
+tag: [ftplib,Python]
 ---
 
 ## ftplib-python与ftp交互
