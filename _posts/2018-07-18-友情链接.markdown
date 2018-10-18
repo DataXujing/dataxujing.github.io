@@ -20,3 +20,9 @@ tag: [友情链接]
 [好文.带你用Python开发个机器学习软件！](https://mp.weixin.qq.com/s/7t0e_hfyDh1b2GPVlzXIMg)
 
 [R语言搭建炫酷的线上博客系统](https://blog.csdn.net/kMD8d5R/article/details/82754968)
+
+[gcForest算法原理及Python实现](https://mp.weixin.qq.com/s?__biz=MzI5NDY1MjQzNA==&mid=2247487833&idx=1&sn=41e5d8a54d5a64b7485034a8cd1586d5&chksm=ec5ece24db294732470159bb6f45b28fd314ae8a63d2652cef96e979a3fa8ed2f0c231033265&mpshare=1&scene=23&srcid=1018vhuMZHFRpkrUC6h8odYy#rd)
+
+[gcForest 算法原理及 Python 与 R 实现](https://deploy-preview-812--cosx.netlify.com/2018/10/python-and-r-implementation-of-gcforest/)
+
+
